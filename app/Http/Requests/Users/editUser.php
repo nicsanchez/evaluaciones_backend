@@ -16,11 +16,7 @@ class editUser extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+    /* Definición de reglas para la API relacionada con la actualización de usuarios */
     public function rules()
     {
         return [

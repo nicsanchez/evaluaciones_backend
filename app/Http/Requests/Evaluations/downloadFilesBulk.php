@@ -4,7 +4,7 @@ namespace App\Http\Requests\Evaluations;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class evaluationsBulk extends FormRequest
+class downloadFilesBulk extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,11 +16,11 @@ class evaluationsBulk extends FormRequest
         return true;
     }
 
-    /* Definición de reglas para la API relacionada con el cargue masivo de evaluaciones PDF en el servidor */
+    /* Definición de reglas para la API relacionada con la descarga de multiples evaluaciones de docentes especificados en un archivo excel */
     public function rules()
     {
         return [
-            '*' => 'file|mimes:pdf'
+            'file' => 'file|mimes:xls,xlsx'
         ];
     }
 }

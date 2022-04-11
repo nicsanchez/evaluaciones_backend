@@ -12,6 +12,8 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laraveles/spanish": "^1.5",
+        "maatwebsite/excel": "^3.1",
+        "phpoffice/phpspreadsheet": "^1.22",
         "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {

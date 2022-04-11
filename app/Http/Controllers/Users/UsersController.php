@@ -16,7 +16,7 @@ use App\Http\Requests\Users\editUser;
 class UsersController extends Controller
 {
     public function getUsers(Request $request){
-        return UsersBL::getUsers($request->itemsPerPage);
+        return UsersBL::getUsers($request->input());
     }
 
     public function getUser(Request $request){

@@ -4,14 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
+    Capa de Rutas: En esta capa se definen las rutas API las cuales pueden ser consumidas.
+    Author: David Nicolás Sánchez Sendoya, Augusto Enrique Salazar
+
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -34,6 +29,9 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
     Route::group(['prefix' => 'evaluations'],function (){
         Route::post('saveAttachments','App\Http\Controllers\Evaluations\EvaluationsController@saveAttachments');
+        Route::post('getEvaluations','App\Http\Controllers\Evaluations\EvaluationsController@getEvaluations');
+        Route::post('downloadFileByFilename','App\Http\Controllers\Evaluations\EvaluationsController@downloadFileByFilename');
+        Route::post('downloadFilesByBulkFile','App\Http\Controllers\Evaluations\EvaluationsController@downloadFilesByBulkFile');
     });
 
 });

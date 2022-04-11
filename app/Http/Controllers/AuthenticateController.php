@@ -18,8 +18,8 @@ use Log;
 
 class AuthenticateController extends Controller
 {
-    public function authenticate(Request $request)
-    {
+    /* Método usado para realizar la autenticación de un usuario */
+    public function authenticate(Request $request){
         $user = AuthenticateAO::getUserByUsername($request->username);
         if(sizeof($user) == 1){
             $credentials = ['email' => $user[0]->email, 'password' => $request->password];
@@ -48,35 +48,12 @@ class AuthenticateController extends Controller
         } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
                 return response()->json(['Token Inválido'], $e->getStatusCode());
         } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-                return response()->json(['Falta TOken en la peticion'], $e->getStatusCode());
+                return response()->json(['Falta Token en la peticion'], $e->getStatusCode());
         }
         return response()->json($user);
     }
 
-
-    public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        if($validator->fails()){
-                return response()->json($validator->errors()->toJson(),400);
-        }
-
-        $user = User::create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-        ]);
-
-        $token = JWTAuth::fromUser($user);
-
-        return response()->json(compact('user','token'),201);
-    }
-
+    /* Método usado para realizar la destrucción de token y cerrar sesión */
     public function logout(){
         $response['status'] = 400;
         try {

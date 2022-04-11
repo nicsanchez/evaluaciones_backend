@@ -11,10 +11,11 @@ use Log;
 
 class UsersBL
 {
-    public static function getUsers($itemsPerPage){
+    /* Método usado para obtener la información de los usuarios con acceso al aplicativo con paginación */
+    public static function getUsers($data){
         $response['status'] = 400;
         try {
-            $response['data'] = UsersAO::getUsers($itemsPerPage);
+            $response['data'] = UsersAO::getUsers($data['itemsPerPage'],$data['search']);
             $response['status'] = 200;
         } catch (\Throwable $th) {
             $response['msg'] = "No fue posible obtenerse los usuarios.";
@@ -24,6 +25,7 @@ class UsersBL
         return $response;
     }
 
+    /* Método usado para crear un nuevo usuario y codificar la contraseña */
     public static function createUser($data){
         $response['status'] = 400;
         try {
@@ -38,7 +40,7 @@ class UsersBL
         return $response;
     }
 
-
+    /* Método usado para eliminar un usuario */
     public static function deleteUser($data){
         $response['status'] = 400;
         try {
@@ -52,6 +54,7 @@ class UsersBL
         return $response;
     }
 
+    /* Método usado para actualizar la información de un usuario y codificar la contraseña en caso de ser modificada*/
     public static function updateUser($data){
         $response['status'] = 400;
         try {
@@ -76,6 +79,7 @@ class UsersBL
         return $response;
     }
 
+    /* Método usado para obtener la información de un usuario en especifico*/
     public static function getUser($data){
         $response['status'] = 400;
         try {

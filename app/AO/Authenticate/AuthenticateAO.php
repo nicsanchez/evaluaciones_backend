@@ -10,6 +10,7 @@ use DB;
 
 class AuthenticateAO
 {
+    /* Método usado para obtener un usuario en base de datos con el fin de verificar si existe o no. */
     public static function getUserByUsername($username){
         return DB::table('users')->select('email')->where('username',$username)->get()->toArray();
     }
