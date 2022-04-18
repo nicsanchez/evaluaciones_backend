@@ -34,4 +34,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         Route::post('downloadFilesByBulkFile','App\Http\Controllers\Evaluations\EvaluationsController@downloadFilesByBulkFile');
     });
 
+    Route::group(['prefix' => 'logs'],function (){
+        Route::post('getLogs','App\Http\Controllers\Logs\logsController@getLogs');
+    });
+
 });

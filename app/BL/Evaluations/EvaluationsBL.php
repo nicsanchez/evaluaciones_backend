@@ -9,6 +9,7 @@ namespace App\BL\Evaluations;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\AO\Evaluations\EvaluationsAO;
+use App\BL\Logs\LogsBL;
 use Log;
 use ZipArchive;
 use App\Imports\EvaluationsSearch;
@@ -36,6 +37,7 @@ class EvaluationsBL{
                     EvaluationsAO::storeFile($dataFile);
                     $file->store('evaluations','local');
                 }
+                LogsBL::saveLog('Evaluaciones','Carga Masiva');
                 $response['status'] = 200;
             } catch (\Throwable $th) {
                 $response['msg'] = "No fue posible almacenarse las evaluaciones en el servidor.";
@@ -54,7 +56,6 @@ class EvaluationsBL{
             if(!preg_match('/^([a-zA-ZÀ-ÿ ]{3,})-([0-9]{6,15})+$/', $fileName)){
                 array_push($errors,$fileName);
             }
-            
         }
         return $errors;
     }
@@ -105,6 +106,7 @@ class EvaluationsBL{
             }
             $response['errors'] = $downloadList::$errors;
             $response['status'] = 200;
+            LogsBL::saveLog('Evaluaciones','Descarga Masiva');
         } catch (\Throwable $th) {
             $response['msg'] = "No fue posible descargarse el listado de evaluaciones almacenados en el servidor.";
             Log::error('No fue posible descargarse el listado de evaluaciones almacenados en el servidor | E: '.$th->getMessage().' | L: '.$th->getLine().' | F:'.$th->getFile());
