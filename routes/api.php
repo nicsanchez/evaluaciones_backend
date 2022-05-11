@@ -24,6 +24,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         Route::post('createUser','App\Http\Controllers\Users\UsersController@createUser');
         Route::post('deleteUser','App\Http\Controllers\Users\UsersController@deleteUser');
         Route::post('updateUser','App\Http\Controllers\Users\UsersController@updateUser');
+        Route::post('updatePersonalData','App\Http\Controllers\Users\UsersController@updatePersonalData');
         Route::post('getUser','App\Http\Controllers\Users\UsersController@getUser');
     });
 
@@ -37,5 +38,9 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::group(['prefix' => 'logs'],function (){
         Route::post('getLogs','App\Http\Controllers\Logs\logsController@getLogs');
     });
-
+    
+    Route::group(['prefix' => 'roles'],function (){
+        Route::post('getAllRoles','App\Http\Controllers\Roles\RolesController@getAllRoles');
+        Route::post('getPermissions','App\Http\Controllers\Roles\RolesController@getPermissions');
+    });
 });

@@ -26,6 +26,7 @@ class createUser extends FormRequest
             'document' => 'required|numeric|digits_between:6,15|unique:users,document',
             'username' => 'required|unique:users,username',
             'password' => 'required',
+            'rol' => 'required',
         ];
     }
 }

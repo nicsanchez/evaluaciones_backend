@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\BL\Users\UsersBL;
 use App\Http\Requests\Users\createUser;
 use App\Http\Requests\Users\editUser;
+use App\Http\Requests\Users\editLoggedUser;
 
 class UsersController extends Controller
 {
@@ -20,7 +21,7 @@ class UsersController extends Controller
     }
 
     public function getUser(Request $request){
-        return UsersBL::getUser($request->input());
+        return UsersBL::getUser();
     }
 
     public function createUser(createUser $request){
@@ -29,6 +30,10 @@ class UsersController extends Controller
 
     public function updateUser(editUser $request){
         return UsersBL::updateUser($request->input('data'));
+    }
+
+    public function updatePersonalData(editLoggedUser $request){
+        return UsersBL::updatePersonalData($request->input('data'));
     }
 
     public function deleteUser(Request $request){

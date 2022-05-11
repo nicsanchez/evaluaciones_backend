@@ -12,7 +12,7 @@ class UsersAO{
     
     /* Método usado para obtener información no sensible de los usuarios de base de datos*/
     public static function getUsers($itemsPerPage,$search){
-        $result = DB::table('users')->select('id','name','lastname','email','document','username');
+        $result = DB::table('users')->select('id','name','lastname','email','document','username','rol');
         if($search !== '' && $search !== null){
             $result = $result->where('document','LIKE',$search.'%')->paginate($itemsPerPage);
         }else{
@@ -29,7 +29,8 @@ class UsersAO{
             'email' => $data['mail'],
             'document' => $data['document'],
             'password' => $data['password'],
-            'username' => $data['username']
+            'username' => $data['username'],
+            'rol' => $data['rol']
         ]);
     }
 
