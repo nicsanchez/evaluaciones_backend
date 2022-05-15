@@ -26,6 +26,7 @@ class editUser extends FormRequest
             'data.email' => 'required|email|max:50|unique:users,email,'.$this->request->get('data')['id'],
             'data.document' => 'required|numeric|digits_between:6,15|unique:users,document,'.$this->request->get('data')['id'],
             'data.username' => 'required|unique:users,username,'.$this->request->get('data')['id'],
+            'data.rol' => 'required',
         ];
     }
 }

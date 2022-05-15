@@ -27,7 +27,6 @@ class editLoggedUser extends FormRequest
             'data.email' => 'required|email|max:50|unique:users,email,'.JWTAuth::user()->id,
             'data.document' => 'required|numeric|digits_between:6,15|unique:users,document,'.JWTAuth::user()->id,
             'data.username' => 'required|unique:users,username,'.JWTAuth::user()->id,
-            'data.rol' => 'required',
         ];
     }
 }
