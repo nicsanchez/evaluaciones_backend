@@ -14,18 +14,25 @@ use Log;
 use ZipArchive;
 use App\Imports\EvaluationsSearch;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Filesystem\Filesystem;
 
 class EvaluationsBL{
 
     /* Método para almacenar las evaluaciones en PDF adjuntas */
     public static function saveAttachments($data){
         $response['status'] = 400;
-        $response['errors'] = self::validateFileNames($data);
-        if(sizeof($response['errors']) == 0){
-            try {
+        try {
+            $storagePath = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
+            $hashName = self::storeZIPFileInTemporalRoute($data);
+            self::extractZIPFileInStorage($hashName,$storagePath);
+            $unzipFiles = Storage::disk('local')->allFiles('unzip');
+            $errors = self::validateFileNames($storagePath,$unzipFiles);
+            if(count($errors) == 0){
                 Storage::deleteDirectory('evaluations');
                 EvaluationsAO::deleteEvaluationsTable();
-                foreach ($data as $file) {
+                foreach ($unzipFiles as $unzipFile) {
+                    $file = self::pathToUploadedFile($storagePath.$unzipFile);
                     $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                     $dataFile = [
                         'filename' => $fileName,
@@ -36,26 +43,55 @@ class EvaluationsBL{
                     ];
                     EvaluationsAO::storeFile($dataFile);
                     $file->store('evaluations','local');
+                    $response['status'] = 200;
                 }
-                LogsBL::saveLog('Evaluaciones','Carga Masiva');
-                $response['status'] = 200;
-            } catch (\Throwable $th) {
-                $response['msg'] = "No fue posible almacenarse las evaluaciones en el servidor.";
-                Log::error('Error al almacenarse las evaluaciones | E: '.$th->getMessage().' | L: '.$th->getLine().' | F:'.$th->getFile());
             }
+            Storage::deleteDirectory('unzip');
+            LogsBL::saveLog('Evaluaciones','Carga Masiva');
+            $response['errors'] = $errors;
+        } catch (\Throwable $th) {
+            $response['msg'] = "No fue posible almacenarse las evaluaciones en el servidor.";
+            Log::error('Error al almacenarse las evaluaciones | E: '.$th->getMessage().' | L: '.$th->getLine().' | F:'.$th->getFile());        
         }
-
         return $response;
     }
 
+    public static function extractZIPFileInStorage($hashName,$storagePath){
+        $zip = new ZipArchive;
+        $zip->open($storagePath.'\\tmp\\'.$hashName);
+        $zip->extractTo($storagePath.'\\unzip');
+        $zip->close();
+        Storage::deleteDirectory('tmp');
+    }
+
+    public static function storeZIPFileInTemporalRoute($request){
+        $file = reset($request);
+        $hashName = $file->hashName();
+        $file->store('tmp','local');
+        return $hashName;
+    }
+
+    public static function pathToUploadedFile( $path, $test = true ) {
+        $filesystem = new Filesystem;
+        $name = $filesystem->name( $path );
+        $extension = $filesystem->extension( $path );
+        $originalName = $name . '.' . $extension;
+        $mimeType = $filesystem->mimeType( $path );
+        $error = null;
+        return new UploadedFile( $path, $originalName, $mimeType, $error, $test );
+    }
+
     /* Método para validar que el nombre del PDF adjunto (Nombre-cedula.pdf) */
-    public static function validateFileNames($files){
+    public static function validateFileNames($storagePath,$unzipFiles){
         $errors = [];
-        foreach ($files as $file) {
+        $cont = 1;
+        foreach ($unzipFiles as $unzipFile) {
+            $file = self::pathToUploadedFile($storagePath.$unzipFile);
             $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             if(!preg_match('/^([a-zA-ZÀ-ÿ ]{3,})-([0-9]{6,15})+$/', $fileName)){
-                array_push($errors,$fileName);
+                $errors[] = ['filename'=>$fileName,'numero'=>$cont];
             }
+            $cont++;
         }
         return $errors;
     }
