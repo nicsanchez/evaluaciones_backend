@@ -35,13 +35,17 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         Route::group(['prefix' => 'roles'],function (){
             Route::post('getAllRoles','App\Http\Controllers\Roles\RolesController@getAllRoles');
         });
+        Route::group(['prefix' => 'emails'],function (){
+            Route::post('storeEmailsByBulkFile','App\Http\Controllers\Emails\EmailsController@storeEmailsByBulkFile');
+            Route::post('sendEvaluationMailToUserByDocument','App\Http\Controllers\Emails\EmailsController@sendEvaluationMailToUserByDocument');
+            Route::post('sendEvaluationsMailsToMultipleUsers','App\Http\Controllers\Emails\EmailsController@sendEvaluationsMailsToMultipleUsers');
+        });
     });
 
     Route::group(['prefix' => 'users'],function (){
         Route::post('getUser','App\Http\Controllers\Users\UsersController@getUser');
         Route::post('updatePersonalData','App\Http\Controllers\Users\UsersController@updatePersonalData');
     });
-
 
     Route::group(['prefix' => 'evaluations'],function (){
         Route::post('getEvaluations','App\Http\Controllers\Evaluations\EvaluationsController@getEvaluations');

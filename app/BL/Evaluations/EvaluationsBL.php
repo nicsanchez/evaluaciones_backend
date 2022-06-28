@@ -128,7 +128,7 @@ class EvaluationsBL{
         try {
             $downloadList = new EvaluationsSearch;
             Excel::import($downloadList, $file);
-            if(sizeof($downloadList::$evaluations) > 0){
+            if(count($downloadList::$evaluations) > 0){
                 $zip = new ZipArchive;
                 $fileName = 'Evaluaciones.zip';
                 $storagePath = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
@@ -141,6 +141,7 @@ class EvaluationsBL{
                 $response['evaluations'] = base64_encode(Storage::disk('local')->get($fileName));
             }
             $response['errors'] = $downloadList::$errors;
+            $response['downloadEvaluations'] = (count($downloadList::$evaluations) > 0) ? true : false;
             $response['status'] = 200;
             LogsBL::saveLog('Evaluaciones','Descarga Masiva');
         } catch (\Throwable $th) {

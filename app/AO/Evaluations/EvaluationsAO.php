@@ -22,9 +22,11 @@ class EvaluationsAO
 
     /* Método para obtener las evaluaciones con paginación */
     public static function getEvaluations($itemsPerPage,$search){
-        $result = DB::table('evaluations');
+        $result = DB::table('evaluations as e')
+            ->leftJoin('emails as m','e.document','m.document')
+            ->select('e.*','m.email');
         if($search !== '' && $search !== null){
-            $result = $result->where('document','LIKE',$search.'%')->paginate($itemsPerPage);
+            $result = $result->where('e.document','LIKE',$search.'%')->paginate($itemsPerPage);
         }else{
             $result = $result->paginate($itemsPerPage);
         }
@@ -34,5 +36,14 @@ class EvaluationsAO
     /* Método para obtener una evaluación por numero de documento de usuario */
     public static function getEvaluation($document){
         return DB::table('evaluations')->where('document',$document)->get();
+    }
+
+    /* Método para obtener una evaluación y correo para el envio via email con el número de cedula del docente*/
+    public static function getEvaluationAndMailByDocument($document){
+        return DB::table('evaluations as e')
+                ->join('emails as m','e.document','m.document')
+                ->select('e.hashname','e.filename','m.email')
+                ->where('e.document',$document)
+                ->get();
     }
 }
