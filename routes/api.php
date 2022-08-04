@@ -37,9 +37,12 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         });
         Route::group(['prefix' => 'emails'],function (){
             Route::post('storeEmailsByBulkFile','App\Http\Controllers\Emails\EmailsController@storeEmailsByBulkFile');
-            Route::post('sendEvaluationMailToUserByDocument','App\Http\Controllers\Emails\EmailsController@sendEvaluationMailToUserByDocument');
-            Route::post('sendEvaluationsMailsToMultipleUsers','App\Http\Controllers\Emails\EmailsController@sendEvaluationsMailsToMultipleUsers');
         });
+    });
+
+    Route::group(['prefix' => 'emails'],function (){
+        Route::post('sendEvaluationMailToUserByDocument','App\Http\Controllers\Emails\EmailsController@sendEvaluationMailToUserByDocument');
+        Route::post('sendEvaluationsMailsToMultipleUsers','App\Http\Controllers\Emails\EmailsController@sendEvaluationsMailsToMultipleUsers');
     });
 
     Route::group(['prefix' => 'users'],function (){
